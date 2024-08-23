@@ -3,12 +3,13 @@ Corey Verkouteren
 8/22/2024-?
 Creating a neural network from scratch
 """
-from neuron import Neuron
+from neuron import Neuron, neural_network_output
+from random_data import random_weighted_neurons
 
 
-# sample data for neuron
-inputs = [1.1, 5.6, 9.3]
-weights = [4.2, 10, 7.6]
-bias = 2
+# sample data for neurons
+inputs = [1.1, 5.6, 9.3, .7]
 
-myNeuron = Neuron(inputs, weights, bias)
+neurons = random_weighted_neurons(inputs, 3)
+
+print(neural_network_output(neurons))
