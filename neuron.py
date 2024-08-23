@@ -1,5 +1,5 @@
 # code for neurons
-
+from numpy import dot
 
 class Neuron:
     def __init__(self, inputs, weights, bias):
@@ -13,22 +13,56 @@ class Neuron:
         self.bias = bias
 
     def output(self):
-        total = 0
-        for data, weight in zip(self.inputs, self.weights):
-            total += data * weight
-
-        return total + self.bias
+        # dot multiplies our input and weight arrays at each corresponding element and returns the sum of those products
+        return dot(self.weights, self.inputs) + self.bias
 
 
-def neural_network_output(neurons: list):
-    """
-    compute results from multiple neuron outputs at once
-    :param neurons: list of neuron objects
-    :return: list of outputs
-    """
-    output = []
+class NeuralLayer:
+    def __init__(self, inputs, neurons=None):
+        """
+        handles a network of neurons
+        :param inputs: list of input data used by neurons
+        :param neurons: any existing neurons to add to layer
+        """
+        if neurons is None:
+            neurons = []
 
-    for neuron in neurons:
-        output.append(neuron.output())
+        self.neurons = neurons
+        self.inputs = inputs
+        self.weights = []
+        self.biases = []
 
-    return output
+        if self.neurons:
+            # update weight and bias list if neurons are being added initially
+            self.refresh_weights_and_biases()
+
+    def add_neuron(self, neuron):
+        """
+        add a neuron to the network
+        :param neuron: a Neuron object
+        :return:
+        """
+        self.neurons.append(neuron)
+        self.weights.append(neuron.weights)
+        self.biases.append(neuron.bias)
+
+    def refresh_weights_and_biases(self):
+        """
+        refreshes the weights and biases list (use if errors occur)
+        :return:
+        """
+        self.weights = []
+        self.biases = []
+        for neuron in self.neurons:
+            self.weights.append(neuron.weights)
+            self.biases.append(neuron.bias)
+
+    def output_layer(self):
+        """
+        get the output for the network layer
+        :return:
+        """
+        # dot multiplies our input and weight arrays at each corresponding element and returns the sum of those products
+        # weight is first so it loops through each weight array and does dot products on each with the input array
+        # this gives the array that is added to the biases array, again by corresponding element
+        return dot(self.weights, self.inputs) + self.biases
