@@ -1,68 +1,27 @@
-# code for neurons
-from numpy import dot
-
-class Neuron:
-    def __init__(self, inputs, weights, bias):
-        """
-        :param inputs: float list of input values (must be same length as weights)
-        :param weights: float list of weights for values (must be same length as inputs)
-        :param bias: int bias applied to node
-        """
-        self.inputs = inputs
-        self.weights = weights
-        self.bias = bias
-
-    def output(self):
-        # dot multiplies our input and weight arrays at each corresponding element and returns the sum of those products
-        return dot(self.weights, self.inputs) + self.bias
+"""
+Neuron and NeuralLayer classes, core of network
+"""
+import numpy as np
 
 
 class NeuralLayer:
-    def __init__(self, inputs, neurons=None):
+    def __init__(self, input_number, neuron_number):
         """
-        handles a network of neurons
-        :param inputs: list of input data used by neurons
-        :param neurons: any existing neurons to add to layer
+        Create a layer of the neural network
+        :param input_number: number of input arrays
+        :param neuron_number: number of neurons
         """
-        if neurons is None:
-            neurons = []
+        # create matrix of weights that matches input number and neuron amount
+        # multiply by .1 to minimize data size
+        self.weights = .1 * np.random.randn(input_number, neuron_number)
+        # create an array of biases to match amount of neurons
+        self.biases = np.zeros((1, neuron_number))
+        self.output = None
 
-        self.neurons = neurons
-        self.inputs = inputs
-        self.weights = []
-        self.biases = []
-
-        if self.neurons:
-            # update weight and bias list if neurons are being added initially
-            self.refresh_weights_and_biases()
-
-    def add_neuron(self, neuron):
+    def forward(self, input_batch):
         """
-        add a neuron to the network
-        :param neuron: a Neuron object
+        apply the layer to the network
+        :param input_batch: batch of inputs to push into network
         :return:
         """
-        self.neurons.append(neuron)
-        self.weights.append(neuron.weights)
-        self.biases.append(neuron.bias)
-
-    def refresh_weights_and_biases(self):
-        """
-        refreshes the weights and biases list (use if errors occur)
-        :return:
-        """
-        self.weights = []
-        self.biases = []
-        for neuron in self.neurons:
-            self.weights.append(neuron.weights)
-            self.biases.append(neuron.bias)
-
-    def output_layer(self):
-        """
-        get the output for the network layer
-        :return:
-        """
-        # dot multiplies our input and weight arrays at each corresponding element and returns the sum of those products
-        # weight is first so it loops through each weight array and does dot products on each with the input array
-        # this gives the array that is added to the biases array, again by corresponding element
-        return dot(self.weights, self.inputs) + self.biases
+        self.output = np.dot(input_batch, self.weights) + self.biases

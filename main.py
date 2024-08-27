@@ -4,16 +4,21 @@ Corey Verkouteren
 Creating a neural network from scratch
 """
 from neuron import NeuralLayer
-from random_data import random_weighted_neurons
 
 
-# sample data for neurons
-inputs = [1.1, 5.6, 9.3, .7]
+# sample data for network
+input_batch = [[1.1, 5.6, 9.3, .7],
+               [.2, 5.2, 3, 4],
+               [2.5, 7, .9, 1.7]]
 
-# create some random neurons to use
-neurons = random_weighted_neurons(inputs, 3)
+# create layers of the network
+# input number matches row length for batch, neuron number can be anything but affects output size
+layer1 = NeuralLayer(4, 5)
+# apply layer
+layer1.forward(input_batch)
 
-# create our neural network layer
-neural_network = NeuralLayer(inputs, neurons)
 
-print(neural_network.output_layer())
+layer2 = NeuralLayer(5, 4)
+layer2.forward(layer1.output)
+
+print(layer2.output)
